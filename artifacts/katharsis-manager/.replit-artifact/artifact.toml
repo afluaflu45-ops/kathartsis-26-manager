@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "KathArtsis Manager"
+version = "1.0.0"
+id = "artifacts/katharsis-manager"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24579
+
+[services.development]
+run = "pnpm --filter @workspace/katharsis-manager run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/katharsis-manager", "run", "build" ]
+publicDir = "artifacts/katharsis-manager/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24579"
+BASE_PATH = "/"

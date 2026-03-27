@@ -1,22 +1,28 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: KathArtsis Manager API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: finance
+    description: Finance transactions
+  - name: receipts
+    description: Donation receipts
+  - name: stickers
+    description: Award stickers
+  - name: certificates
+    description: Award certificates
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +30,205 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /finance/transactions:
+    get:
+      operationId: listTransactions
+      tags: [finance]
+      summary: List all transactions
+      responses:
+        "200":
+          description: List of transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+    post:
+      operationId: createTransaction
+      tags: [finance]
+      summary: Create a transaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTransactionBody"
+      responses:
+        "201":
+          description: Transaction created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+
+  /finance/transactions/{id}:
+    delete:
+      operationId: deleteTransaction
+      tags: [finance]
+      summary: Delete a transaction
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /finance/summary:
+    get:
+      operationId: getFinanceSummary
+      tags: [finance]
+      summary: Get finance summary totals
+      responses:
+        "200":
+          description: Finance summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FinanceSummary"
+
+  /receipts:
+    get:
+      operationId: listReceipts
+      tags: [receipts]
+      summary: List all receipts
+      responses:
+        "200":
+          description: List of receipts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Receipt"
+    post:
+      operationId: createReceipt
+      tags: [receipts]
+      summary: Create a donation receipt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateReceiptBody"
+      responses:
+        "201":
+          description: Receipt created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Receipt"
+
+  /stickers:
+    get:
+      operationId: listStickers
+      tags: [stickers]
+      summary: List all stickers
+      responses:
+        "200":
+          description: List of stickers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Sticker"
+    post:
+      operationId: createSticker
+      tags: [stickers]
+      summary: Create a sticker
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateStickerBody"
+      responses:
+        "201":
+          description: Sticker created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sticker"
+
+  /stickers/{id}:
+    delete:
+      operationId: deleteSticker
+      tags: [stickers]
+      summary: Delete a sticker
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /certificates:
+    get:
+      operationId: listCertificates
+      tags: [certificates]
+      summary: List all certificates
+      responses:
+        "200":
+          description: List of certificates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Certificate"
+    post:
+      operationId: createCertificate
+      tags: [certificates]
+      summary: Create a certificate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCertificateBody"
+      responses:
+        "201":
+          description: Certificate created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Certificate"
+
+  /certificates/{id}:
+    delete:
+      operationId: deleteCertificate
+      tags: [certificates]
+      summary: Delete a certificate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +239,190 @@ components:
       required:
         - status
 
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required:
+        - success
+
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+        date:
+          type: string
+        type:
+          type: string
+          enum: [income, expense]
+        category:
+          type: string
+        name:
+          type: string
+        amount:
+          type: number
+        paymentMethod:
+          type: string
+        notes:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - date
+        - type
+        - category
+        - name
+        - amount
+        - paymentMethod
+
+    CreateTransactionBody:
+      type: object
+      properties:
+        date:
+          type: string
+        type:
+          type: string
+          enum: [income, expense]
+        category:
+          type: string
+        name:
+          type: string
+        amount:
+          type: number
+        paymentMethod:
+          type: string
+        notes:
+          type: string
+      required:
+        - date
+        - type
+        - category
+        - name
+        - amount
+        - paymentMethod
+
+    FinanceSummary:
+      type: object
+      properties:
+        totalIncome:
+          type: number
+        totalExpense:
+          type: number
+        balance:
+          type: number
+      required:
+        - totalIncome
+        - totalExpense
+        - balance
+
+    Receipt:
+      type: object
+      properties:
+        id:
+          type: integer
+        receiptNumber:
+          type: string
+        donorName:
+          type: string
+        amount:
+          type: number
+        paymentMethod:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - receiptNumber
+        - donorName
+        - amount
+        - paymentMethod
+        - createdAt
+
+    CreateReceiptBody:
+      type: object
+      properties:
+        donorName:
+          type: string
+        amount:
+          type: number
+        paymentMethod:
+          type: string
+      required:
+        - donorName
+        - amount
+        - paymentMethod
+
+    Sticker:
+      type: object
+      properties:
+        id:
+          type: integer
+        programName:
+          type: string
+        position:
+          type: string
+          enum: ["1st", "2nd", "3rd"]
+        name:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - programName
+        - position
+        - name
+        - createdAt
+
+    CreateStickerBody:
+      type: object
+      properties:
+        programName:
+          type: string
+        position:
+          type: string
+          enum: ["1st", "2nd", "3rd"]
+        name:
+          type: string
+      required:
+        - programName
+        - position
+        - name
+
+    Certificate:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        programName:
+          type: string
+        position:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - programName
+        - position
+        - createdAt
+
+    CreateCertificateBody:
+      type: object
+      properties:
+        name:
+          type: string
+        programName:
+          type: string
+        position:
+          type: string
+      required:
+        - name
+        - programName
+        - position

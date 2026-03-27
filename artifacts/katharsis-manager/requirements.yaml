@@ -1,0 +1,13 @@
+packages:
+  "framer-motion": "Smooth transitions and micro-interactions"
+  "react-hook-form": "Form state management"
+  "@hookform/resolvers": "Zod integration for forms"
+  "zod": "Schema validation"
+  "date-fns": "Date formatting for receipts and tables"
+  "clsx": "Utility for conditionally joining classNames"
+  "tailwind-merge": "Utility to resolve Tailwind class conflicts"
+  "lucide-react": "Icons"
+
+notes:
+  - Application uses window.print() for generating physical artifacts. CSS @media print is heavily utilized.
+  - Using generated Orval hooks from @workspace/api-client-react but wrapping them locally for cache invalidation.
