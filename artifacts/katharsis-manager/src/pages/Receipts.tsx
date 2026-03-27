@@ -34,13 +34,8 @@ export default function Receipts() {
     });
   };
 
-  const handlePrint = () => {
-    window.print();
-  };
-
   return (
     <div className="space-y-8">
-      {/* NORMAL VIEW (Hidden during print) */}
       <div className="print-hide space-y-8">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Donation Receipts</h2>
@@ -62,9 +57,12 @@ export default function Receipts() {
                     className="w-full h-10 px-3 rounded-md border bg-background"
                     placeholder="Full Name"
                   />
+                  {form.formState.errors.donorName && (
+                    <p className="text-xs text-red-500">{form.formState.errors.donorName.message}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Amount</label>
+                  <label className="text-sm font-medium">Amount (₹)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -82,11 +80,12 @@ export default function Receipts() {
                     <option value="">Select...</option>
                     <option value="Cash">Cash</option>
                     <option value="Bank Transfer">Bank Transfer</option>
-                    <option value="Credit Card">Credit Card</option>
                     <option value="Cheque">Cheque</option>
+                    <option value="UPI">UPI</option>
+                    <option value="Online">Online</option>
                   </select>
                 </div>
-                <Button type="submit" className="w-full" disabled={createReceipt.isPending}>
+                <Button type="submit" className="w-full bg-green-700 hover:bg-green-800" disabled={createReceipt.isPending}>
                   {createReceipt.isPending ? "Generating..." : "Generate Receipt"}
                 </Button>
               </form>
@@ -105,19 +104,19 @@ export default function Receipts() {
                   receipts?.map((receipt) => (
                     <div key={receipt.id} className="flex items-center justify-between p-4 rounded-lg border bg-card hover:shadow-sm transition-all">
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                        <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-700">
                           <CheckCircle2 className="w-5 h-5" />
                         </div>
                         <div>
                           <p className="font-semibold">{receipt.donorName}</p>
                           <p className="text-sm text-muted-foreground">
-                            {receipt.receiptNumber} • {format(new Date(receipt.createdAt), 'PP')}
+                            {receipt.receiptNumber} • {format(new Date(receipt.createdAt), "PP")}
                           </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="text-right">
-                          <p className="font-bold text-lg">{formatCurrency(receipt.amount)}</p>
+                          <p className="font-bold text-lg text-green-700">{formatCurrency(receipt.amount)}</p>
                           <p className="text-xs text-muted-foreground">{receipt.paymentMethod}</p>
                         </div>
                         <Button variant="outline" size="sm" onClick={() => setPrintingReceipt(receipt)}>
@@ -133,7 +132,6 @@ export default function Receipts() {
         </div>
       </div>
 
-      {/* PRINT PREVIEW OVERLAY */}
       {printingReceipt && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 print-hide">
           <div className="bg-background rounded-xl p-6 max-w-2xl w-full">
@@ -141,19 +139,18 @@ export default function Receipts() {
               <h3 className="text-xl font-bold">Print Preview</h3>
               <div className="space-x-2">
                 <Button variant="outline" onClick={() => setPrintingReceipt(null)}>Close</Button>
-                <Button onClick={handlePrint}><Printer className="w-4 h-4 mr-2"/> Print Now</Button>
+                <Button className="bg-green-700 hover:bg-green-800" onClick={() => window.print()}>
+                  <Printer className="w-4 h-4 mr-2" /> Print Now
+                </Button>
               </div>
             </div>
-            
-            {/* The actual printable area */}
-            <div className="bg-white border rounded-lg p-8 shadow-sm">
+            <div className="bg-white border rounded-lg overflow-hidden shadow-sm">
               <PrintableReceipt receipt={printingReceipt} />
             </div>
           </div>
         </div>
       )}
 
-      {/* ACTUAL PRINTABLE DOM (Only visible during print) */}
       <div className="hidden print-fullscreen print-only">
         {printingReceipt && <PrintableReceipt receipt={printingReceipt} />}
       </div>
@@ -163,49 +160,60 @@ export default function Receipts() {
 
 function PrintableReceipt({ receipt }: { receipt: Receipt }) {
   return (
-    <div className="w-full max-w-[800px] mx-auto bg-white p-12 border-2 border-gray-200 relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-2 bg-primary"></div>
-      
-      <div className="flex justify-between items-start mb-12">
-        <div>
-          <h1 className="text-4xl font-bold text-primary font-serif tracking-tight">KathArtsis</h1>
-          <p className="text-gray-500 mt-1">Official Donation Receipt</p>
+    <div className="w-full max-w-[800px] mx-auto bg-white relative overflow-hidden" style={{ fontFamily: "Georgia, serif" }}>
+      <div className="h-3 w-full" style={{ background: "linear-gradient(to right, #15803d, #ca8a04)" }}></div>
+
+      <div className="px-12 pt-8 pb-10">
+        <div className="flex flex-col items-center mb-8 border-b-2 pb-6" style={{ borderColor: "#15803d" }}>
+          <img
+            src="/kathartsis-logo.png"
+            alt="KathArtsis Logo"
+            className="h-16 object-contain mb-2"
+          />
+          <p className="text-gray-500 text-sm tracking-widest uppercase">Official Donation Receipt</p>
         </div>
-        <div className="text-right">
-          <p className="text-2xl font-mono text-gray-400">Receipt No.</p>
-          <p className="text-3xl font-bold font-mono text-gray-900">{receipt.receiptNumber}</p>
+
+        <div className="flex justify-between items-start mb-8">
+          <div>
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Receipt Number</p>
+            <p className="text-3xl font-bold font-mono" style={{ color: "#15803d" }}>{receipt.receiptNumber}</p>
+          </div>
+          <div className="text-right">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Date of Issue</p>
+            <p className="text-lg font-medium text-gray-800">{format(new Date(receipt.createdAt), "MMMM do, yyyy")}</p>
+            <p className="text-sm text-gray-500">{format(new Date(receipt.createdAt), "h:mm a")}</p>
+          </div>
+        </div>
+
+        <div className="rounded-xl p-6 mb-8 border-l-4" style={{ backgroundColor: "#f0fdf4", borderColor: "#15803d" }}>
+          <div className="mb-5">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Received With Gratitude From</p>
+            <p className="text-3xl font-bold text-gray-900">{receipt.donorName}</p>
+          </div>
+          <div className="flex items-end justify-between">
+            <div>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Payment Method</p>
+              <p className="text-lg font-medium text-gray-700">{receipt.paymentMethod}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Amount</p>
+              <p className="text-5xl font-bold" style={{ color: "#15803d" }}>{formatCurrency(receipt.amount)}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-between items-end mt-10">
+          <p className="text-sm text-gray-500 italic max-w-xs">
+            We gratefully acknowledge your generous contribution to KathArtsis — The Ultimate Talent Fiesta.
+          </p>
+          <div className="text-center w-48">
+            <div className="border-b-2 border-gray-300 pb-2 mb-2 h-10"></div>
+            <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Authorized Signature</p>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-12 mb-12">
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Date of Issue</p>
-          <p className="text-lg font-medium">{format(new Date(receipt.createdAt), 'MMMM do, yyyy')}</p>
-        </div>
-        <div className="space-y-1 text-right">
-          <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Payment Method</p>
-          <p className="text-lg font-medium">{receipt.paymentMethod}</p>
-        </div>
-      </div>
-
-      <div className="border-t border-b py-8 my-8 space-y-6">
-        <div>
-          <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Received From</p>
-          <p className="text-2xl font-bold text-gray-900">{receipt.donorName}</p>
-        </div>
-        <div>
-          <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Amount</p>
-          <p className="text-5xl font-bold text-primary">{formatCurrency(receipt.amount)}</p>
-        </div>
-      </div>
-
-      <div className="mt-16 flex justify-between items-end">
-        <p className="text-sm text-gray-500 italic">Thank you for your generous support!</p>
-        <div className="text-center w-48">
-          <div className="border-b border-gray-400 pb-2 mb-2"></div>
-          <p className="text-sm font-medium text-gray-600">Authorized Signature</p>
-        </div>
-      </div>
+      <div className="h-1.5 w-full" style={{ background: "linear-gradient(to right, #15803d, #ca8a04)" }}></div>
     </div>
   );
 }

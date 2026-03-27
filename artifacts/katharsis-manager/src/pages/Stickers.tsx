@@ -23,15 +23,15 @@ export default function Stickers() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { position: "1st" }
+    defaultValues: { position: "1st" },
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     createSticker.mutate({ data }, {
       onSuccess: (newSticker) => {
-        form.reset({ programName: data.programName, position: "1st", name: "" }); // keep program name
+        form.reset({ programName: data.programName, position: "1st", name: "" });
         setPrintingSticker(newSticker);
-      }
+      },
     });
   };
 
@@ -93,16 +93,19 @@ export default function Stickers() {
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {stickers?.map((sticker) => (
-                  <div key={sticker.id} className="relative p-4 rounded-xl border bg-card hover:shadow-md transition-shadow group overflow-hidden">
-                    <div className={`absolute top-0 right-0 w-16 h-16 -mr-8 -mt-8 rounded-full ${
-                      sticker.position === '1st' ? 'bg-amber-400/20' : 
-                      sticker.position === '2nd' ? 'bg-slate-400/20' : 'bg-orange-600/20'
-                    }`} />
-                    
-                    <div className="flex justify-between items-start mb-2 relative z-10">
+                  <div
+                    key={sticker.id}
+                    className={`relative p-4 rounded-xl border hover:shadow-md transition-shadow group overflow-hidden ${
+                      sticker.position === "1st" ? "border-amber-300 bg-amber-50" :
+                      sticker.position === "2nd" ? "border-slate-300 bg-slate-50" :
+                      "border-orange-300 bg-orange-50"
+                    }`}
+                  >
+                    <div className="flex justify-between items-start mb-2">
                       <div className={`inline-flex items-center justify-center px-2.5 py-1 rounded-full text-xs font-bold ${
-                        sticker.position === '1st' ? 'bg-amber-100 text-amber-700' : 
-                        sticker.position === '2nd' ? 'bg-slate-100 text-slate-700' : 'bg-orange-100 text-orange-800'
+                        sticker.position === "1st" ? "bg-amber-200 text-amber-800" :
+                        sticker.position === "2nd" ? "bg-slate-200 text-slate-700" :
+                        "bg-orange-200 text-orange-900"
                       }`}>
                         <Trophy className="w-3 h-3 mr-1" />
                         {sticker.position} Place
@@ -112,24 +115,19 @@ export default function Stickers() {
                           <Printer className="w-4 h-4" />
                         </Button>
                         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
-                          if(confirm('Delete sticker?')) deleteSticker.mutate({ id: sticker.id });
+                          if (confirm("Delete sticker?")) deleteSticker.mutate({ id: sticker.id });
                         }}>
                           <Trash2 className="w-4 h-4 text-destructive" />
                         </Button>
                       </div>
                     </div>
-                    
-                    <div className="relative z-10">
-                      <p className="font-bold text-lg truncate">{sticker.name}</p>
-                      <p className="text-sm text-muted-foreground truncate">{sticker.programName}</p>
-                      <p className="text-xs text-muted-foreground/60 mt-2">{format(new Date(sticker.createdAt), 'PP')}</p>
-                    </div>
+                    <p className="font-bold text-lg truncate">{sticker.name}</p>
+                    <p className="text-sm text-muted-foreground truncate">{sticker.programName}</p>
+                    <p className="text-xs text-muted-foreground/60 mt-1">{format(new Date(sticker.createdAt), "PP")}</p>
                   </div>
                 ))}
                 {stickers?.length === 0 && (
-                  <div className="col-span-full py-12 text-center text-muted-foreground">
-                    No stickers created.
-                  </div>
+                  <div className="col-span-full py-12 text-center text-muted-foreground">No stickers created yet.</div>
                 )}
               </div>
             </CardContent>
@@ -137,15 +135,14 @@ export default function Stickers() {
         </div>
       </div>
 
-      {/* PRINT PREVIEW OVERLAY */}
       {printingSticker && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 print-hide">
-          <div className="bg-background rounded-xl p-6 max-w-md w-full">
+          <div className="bg-background rounded-xl p-6 max-w-sm w-full">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-bold">Print Sticker</h3>
               <div className="space-x-2">
                 <Button variant="outline" onClick={() => setPrintingSticker(null)}>Close</Button>
-                <Button onClick={() => window.print()}><Printer className="w-4 h-4 mr-2"/> Print</Button>
+                <Button onClick={() => window.print()}><Printer className="w-4 h-4 mr-2" />Print</Button>
               </div>
             </div>
             <div className="flex justify-center bg-gray-100 p-8 rounded-lg">
@@ -155,7 +152,6 @@ export default function Stickers() {
         </div>
       )}
 
-      {/* ACTUAL PRINTABLE DOM */}
       <div className="hidden print-fullscreen print-only">
         {printingSticker && <PrintableSticker sticker={printingSticker} />}
       </div>
@@ -164,39 +160,58 @@ export default function Stickers() {
 }
 
 function PrintableSticker({ sticker }: { sticker: Sticker }) {
-  const isGold = sticker.position === '1st';
-  const isSilver = sticker.position === '2nd';
-  const colors = isGold 
-    ? 'from-amber-300 via-amber-400 to-amber-500 border-amber-600 text-amber-900' 
-    : isSilver 
-      ? 'from-slate-200 via-slate-300 to-slate-400 border-slate-500 text-slate-800'
-      : 'from-orange-300 via-orange-400 to-orange-500 border-orange-600 text-orange-950';
+  const isGold = sticker.position === "1st";
+  const isSilver = sticker.position === "2nd";
+
+  const gradientColors = isGold
+    ? "from-amber-300 via-yellow-400 to-amber-500"
+    : isSilver
+    ? "from-slate-200 via-slate-300 to-slate-400"
+    : "from-orange-300 via-orange-400 to-orange-500";
+
+  const borderColor = isGold ? "#b45309" : isSilver ? "#64748b" : "#9a3412";
+  const textColor = isGold ? "#78350f" : isSilver ? "#1e293b" : "#431407";
 
   return (
-    <div className={`w-[80mm] h-[80mm] rounded-full flex flex-col items-center justify-center text-center p-6 border-[6px] bg-gradient-to-br shadow-2xl ${colors} relative overflow-hidden`}>
-      {/* Decorative inner rings */}
-      <div className="absolute inset-2 border-2 border-white/40 rounded-full border-dashed pointer-events-none"></div>
-      <div className="absolute inset-4 border border-white/30 rounded-full pointer-events-none"></div>
-      
-      <Trophy className="w-12 h-12 text-white/90 mb-2 drop-shadow-md" />
-      <h2 className="text-3xl font-black font-serif uppercase tracking-widest drop-shadow-sm mb-1">
-        {sticker.position}
-      </h2>
-      <div className="w-12 h-0.5 bg-current opacity-30 my-2 rounded-full"></div>
-      <p className="text-[10px] font-bold uppercase tracking-wider opacity-80 mb-1 leading-tight px-4 line-clamp-2">
-        {sticker.programName}
-      </p>
-      <p className="text-xl font-bold font-serif leading-tight drop-shadow-sm max-w-[90%] truncate">
-        {sticker.name}
-      </p>
-      
-      {/* Sparkles */}
-      {isGold && (
-        <>
-          <div className="absolute top-8 left-12 w-2 h-2 bg-white rounded-full animate-pulse blur-[1px]"></div>
-          <div className="absolute bottom-16 right-10 w-3 h-3 bg-white rounded-full animate-pulse blur-[2px] delay-150"></div>
-        </>
-      )}
+    <div
+      className={`w-[85mm] rounded-2xl bg-gradient-to-br ${gradientColors} shadow-2xl overflow-hidden`}
+      style={{ border: `4px solid ${borderColor}` }}
+    >
+      <div className="flex flex-col items-center px-6 pt-5 pb-2">
+        <img src="/kathartsis-logo.png" alt="KathArtsis" className="h-8 object-contain mb-3 opacity-90" />
+        <div className="w-full border-t border-current opacity-20 mb-3"></div>
+      </div>
+
+      <div className="flex flex-col items-center px-6 pb-6 text-center" style={{ color: textColor }}>
+        <div className="mb-2">
+          <Trophy
+            className="w-14 h-14 mx-auto drop-shadow-md mb-1"
+            style={{ color: isGold ? "#92400e" : isSilver ? "#334155" : "#7c2d12" }}
+          />
+        </div>
+        <div
+          className="text-5xl font-black tracking-tight leading-none mb-1"
+          style={{ fontFamily: "Georgia, serif" }}
+        >
+          {sticker.position}
+        </div>
+        <div className="text-base font-bold uppercase tracking-widest opacity-70 mb-3">PLACE</div>
+
+        <div className="w-12 border-t-2 border-current opacity-30 mb-3"></div>
+
+        <p
+          className="text-xs font-bold uppercase tracking-widest opacity-75 mb-2 leading-tight px-2"
+          style={{ maxWidth: "100%" }}
+        >
+          {sticker.programName}
+        </p>
+        <p
+          className="text-2xl font-bold leading-tight"
+          style={{ fontFamily: "Georgia, serif" }}
+        >
+          {sticker.name}
+        </p>
+      </div>
     </div>
   );
 }

@@ -1,0 +1,180 @@
+Update the existing web app “KathArtsis 26 Manager” with the following improvements and fixes:
+
+---
+
+💰 FINANCE MODULE – IMPROVEMENTS
+
+💱 Currency Fix
+
+- Change all currency display from dollars ($) to Indian Rupees (₹)
+- Format amounts like:
+  - ₹500.00
+  - ₹1,54,263.78
+
+---
+
+📂 Category Standardization (VERY IMPORTANT)
+
+Replace random categories with fixed predefined categories:
+
+Income Categories:
+
+- Opening Balance
+- Donation
+- Rent
+- Collection 
+- Sponsors 
+- Other
+
+Expense Categories:
+
+- Starting Payment
+- Electricity
+- Office & Stationery
+- Award & Presentation
+- Repair
+- T&A
+- Food & Travel
+- L&S
+- Rent
+- Print
+- Other
+
+👉 Use dropdown only (no manual typing)
+
+---
+
+📎 Attachment Feature (NEW)
+
+When adding a transaction:
+
+Add:
+
+- Upload Image option (bill/receipt photo)
+
+Features:
+
+- Accept image files (JPG, PNG)
+- Store and link with transaction
+- Add “View Attachment” button
+
+---
+
+🧾 RECEIPT MODULE – UPGRADE
+
+🎨 Add Logo
+
+- Add KathArtsis logo at top center
+- Logo should appear in:
+  - Screen view
+  - Print
+  - PDF download
+
+💱 Currency Fix
+
+- Show amount as:
+  👉 ₹500.00 (not Rs. or $)
+
+🎨 Professional Design Improvements
+
+- Better spacing
+- Clean typography
+- Proper alignment
+- Consistent green + gold theme
+
+---
+
+🏷️ STICKER MODULE – UPGRADE
+
+🎨 Add Logo
+
+- Display KathArtsis logo at top
+
+🎨 Improve Design
+
+- Center alignment
+- Bold program name
+- Clear prize position (1st / 2nd / 3rd)
+- Proper spacing for printing
+
+---
+
+📜 CERTIFICATE MODULE – UPGRADE
+
+🎨 Add Logo
+
+- KathArtsis logo at top center
+
+🎨 Professional Layout
+
+- Large title: CERTIFICATE
+- Proper margins
+- Centered text
+- Highlight:
+  - Name
+  - Program name
+  - Position
+
+---
+
+📊 ACCOUNT STATEMENT MODULE – IMPROVEMENT
+
+📂 Category Order Fix
+
+Display categories in proper structured order, not random:
+
+Expense Side:
+
+- To Starting Payment
+- To Electricity
+- To Office & Stationery
+- To Award & Presentation
+- To Repair
+- To Food & Travel
+- To L&S
+- To T&A
+- To Rent
+- To Print
+- To Others 
+
+---
+
+Income Side:
+
+- By Opening Balance
+- By Electricity
+- By Print
+- By Donation
+- By Rent
+- By Sponsorship 
+- By Others 
+
+---
+
+💱 Currency Format
+
+- Show all values in ₹ format
+
+---
+
+🎨 GLOBAL DESIGN IMPROVEMENT
+
+- Use consistent green + gold theme
+- Use modern clean fonts
+- Add proper spacing and margins
+- Ensure print-friendly layout (A4)
+- Maintain professional look across all modules
+
+---
+
+🚀 FINAL GOAL
+
+The system should now:
+
+- Use correct ₹ currency
+- Use structured accounting categories
+- Allow attaching bill images to transactions
+- Show logo in receipts, stickers, and certificates
+- Look fully professional and print-ready
+
+Make all updates without breaking existing functionality.

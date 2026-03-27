@@ -12,7 +12,7 @@ import type { Certificate } from "@workspace/api-client-react";
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   programName: z.string().min(1, "Program Name is required"),
-  position: z.string().min(1, "Position/Achievement description is required"),
+  position: z.string().min(1, "Position/Achievement is required"),
 });
 
 export default function Certificates() {
@@ -30,7 +30,7 @@ export default function Certificates() {
       onSuccess: (newCert) => {
         form.reset({ name: "", programName: data.programName, position: data.position });
         setPrintingCert(newCert);
-      }
+      },
     });
   };
 
@@ -69,12 +69,18 @@ export default function Certificates() {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Achievement / Position</label>
-                  <input
-                    type="text"
+                  <select
                     {...form.register("position")}
                     className="w-full h-10 px-3 rounded-md border bg-background"
-                    placeholder="e.g. First Place in Oil Painting"
-                  />
+                  >
+                    <option value="">Select position...</option>
+                    <option value="1st Place">1st Place</option>
+                    <option value="2nd Place">2nd Place</option>
+                    <option value="3rd Place">3rd Place</option>
+                    <option value="Participation">Participation</option>
+                    <option value="Best Performance">Best Performance</option>
+                    <option value="Special Recognition">Special Recognition</option>
+                  </select>
                 </div>
                 <Button type="submit" className="w-full" disabled={createCert.isPending}>
                   {createCert.isPending ? "Generating..." : "Generate Certificate"}
@@ -92,7 +98,7 @@ export default function Certificates() {
                 {certificates?.map((cert) => (
                   <div key={cert.id} className="flex items-center justify-between p-4 rounded-lg border bg-card hover:border-primary/50 transition-colors group">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100">
+                      <div className="w-12 h-12 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600 border border-amber-200">
                         <Medal className="w-6 h-6" />
                       </div>
                       <div>
@@ -105,7 +111,7 @@ export default function Certificates() {
                         <Printer className="w-4 h-4 mr-2" /> Print
                       </Button>
                       <Button variant="ghost" size="sm" onClick={() => {
-                        if(confirm("Delete this certificate record?")) deleteCert.mutate({ id: cert.id });
+                        if (confirm("Delete this certificate record?")) deleteCert.mutate({ id: cert.id });
                       }}>
                         <Trash2 className="w-4 h-4 text-destructive" />
                       </Button>
@@ -113,9 +119,7 @@ export default function Certificates() {
                   </div>
                 ))}
                 {certificates?.length === 0 && (
-                  <div className="py-12 text-center text-muted-foreground">
-                    No certificates issued yet.
-                  </div>
+                  <div className="py-12 text-center text-muted-foreground">No certificates issued yet.</div>
                 )}
               </div>
             </CardContent>
@@ -123,20 +127,18 @@ export default function Certificates() {
         </div>
       </div>
 
-      {/* PRINT PREVIEW OVERLAY */}
       {printingCert && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 print-hide">
-          <div className="bg-background rounded-xl p-6 w-full max-w-[1000px] h-[90vh] flex flex-col">
-            <div className="flex justify-between items-center mb-4 flex-shrink-0">
-              <h3 className="text-xl font-bold">Print Certificate</h3>
+          <div className="bg-background rounded-xl p-6 w-full max-w-[1050px]">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold">Certificate Preview</h3>
               <div className="space-x-2">
                 <Button variant="outline" onClick={() => setPrintingCert(null)}>Close</Button>
-                <Button onClick={() => window.print()}><Printer className="w-4 h-4 mr-2"/> Print</Button>
+                <Button onClick={() => window.print()}><Printer className="w-4 h-4 mr-2" />Print</Button>
               </div>
             </div>
-            <div className="flex-1 overflow-auto bg-gray-100 p-4 rounded-lg flex items-center justify-center">
-              {/* Scale down for preview if needed, but actual print will use real dimensions */}
-              <div className="transform scale-[0.6] sm:scale-[0.8] md:scale-100 origin-center">
+            <div className="overflow-auto bg-gray-100 p-4 rounded-lg flex justify-center">
+              <div className="transform scale-[0.55] sm:scale-[0.7] md:scale-[0.85] origin-top">
                 <PrintableCertificate cert={printingCert} />
               </div>
             </div>
@@ -144,7 +146,6 @@ export default function Certificates() {
         </div>
       )}
 
-      {/* ACTUAL PRINTABLE DOM */}
       <div className="hidden print-fullscreen print-only bg-white">
         {printingCert && <PrintableCertificate cert={printingCert} />}
       </div>
@@ -154,58 +155,93 @@ export default function Certificates() {
 
 function PrintableCertificate({ cert }: { cert: Certificate }) {
   return (
-    <div className="w-[297mm] h-[210mm] bg-white text-center flex flex-col items-center justify-center relative p-[15mm] shadow-2xl">
-      {/* Decorative Borders */}
-      <div className="absolute inset-[10mm] border-[8px] border-double border-primary/20 pointer-events-none"></div>
-      <div className="absolute inset-[14mm] border-2 border-primary pointer-events-none"></div>
-      
-      {/* Corner decorations */}
-      <div className="absolute top-[14mm] left-[14mm] w-8 h-8 border-t-4 border-l-4 border-primary"></div>
-      <div className="absolute top-[14mm] right-[14mm] w-8 h-8 border-t-4 border-r-4 border-primary"></div>
-      <div className="absolute bottom-[14mm] left-[14mm] w-8 h-8 border-b-4 border-l-4 border-primary"></div>
-      <div className="absolute bottom-[14mm] right-[14mm] w-8 h-8 border-b-4 border-r-4 border-primary"></div>
+    <div
+      className="bg-white text-center flex flex-col items-center justify-center relative"
+      style={{
+        width: "297mm",
+        minHeight: "210mm",
+        padding: "18mm 20mm",
+        fontFamily: "Georgia, serif",
+      }}
+    >
+      <div className="absolute inset-[8mm] pointer-events-none" style={{ border: "6px double #15803d" }}></div>
+      <div className="absolute inset-[12mm] pointer-events-none" style={{ border: "2px solid #ca8a04" }}></div>
 
-      <div className="w-20 h-20 mb-8 bg-primary text-white rounded-full flex items-center justify-center text-4xl font-serif font-bold mx-auto">
-        K
+      <div className="absolute top-[14mm] left-[14mm] w-10 h-10" style={{ borderTop: "4px solid #15803d", borderLeft: "4px solid #15803d" }}></div>
+      <div className="absolute top-[14mm] right-[14mm] w-10 h-10" style={{ borderTop: "4px solid #15803d", borderRight: "4px solid #15803d" }}></div>
+      <div className="absolute bottom-[14mm] left-[14mm] w-10 h-10" style={{ borderBottom: "4px solid #15803d", borderLeft: "4px solid #15803d" }}></div>
+      <div className="absolute bottom-[14mm] right-[14mm] w-10 h-10" style={{ borderBottom: "4px solid #15803d", borderRight: "4px solid #15803d" }}></div>
+
+      <div className="mb-6">
+        <img src="/kathartsis-logo.png" alt="KathArtsis" className="h-16 object-contain mx-auto" />
       </div>
 
-      <h1 className="text-6xl font-serif font-bold text-primary tracking-widest uppercase mb-4">
-        Certificate of Achievement
-      </h1>
-      
-      <p className="text-xl text-gray-500 italic mt-8 mb-4 font-serif">
-        This is proudly presented to
-      </p>
+      <div className="mb-2">
+        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-gray-500">KathArtsis Presents</p>
+      </div>
 
-      <h2 className="text-5xl font-serif font-bold text-gray-900 border-b-2 border-gray-300 pb-2 mb-6 px-16 inline-block min-w-[500px]">
+      <h1
+        className="font-black uppercase mb-6"
+        style={{ fontSize: "52px", letterSpacing: "0.15em", color: "#15803d", lineHeight: 1.1 }}
+      >
+        Certificate
+      </h1>
+
+      <div className="w-32 mx-auto mb-2" style={{ borderTop: "2px solid #ca8a04" }}></div>
+      <p className="text-base italic text-gray-500 mb-4">This is proudly presented to</p>
+
+      <h2
+        className="font-bold mb-1 pb-2 inline-block px-16"
+        style={{
+          fontSize: "40px",
+          color: "#1a1a1a",
+          borderBottom: "3px solid #15803d",
+          minWidth: "400px",
+        }}
+      >
         {cert.name}
       </h2>
 
-      <p className="text-xl text-gray-600 font-serif max-w-3xl leading-relaxed mb-16">
-        In recognition of outstanding performance and dedication, achieving <br/>
-        <strong className="text-2xl text-primary mt-2 block">{cert.position}</strong> <br/>
-        in the <strong className="text-gray-900">{cert.programName}</strong>.
+      <p className="text-base text-gray-500 italic mt-6 mb-2">In recognition of outstanding achievement, for securing</p>
+
+      <p
+        className="font-bold mb-1"
+        style={{ fontSize: "28px", color: "#ca8a04" }}
+      >
+        {cert.position}
       </p>
 
-      <div className="flex w-full justify-around items-end px-20 mt-auto">
-        <div className="text-center w-64">
-          <div className="border-b border-gray-400 pb-2 mb-2">
-            <span className="font-serif italic text-lg">{format(new Date(cert.createdAt), 'MMMM do, yyyy')}</span>
+      <p className="text-base text-gray-600 mb-8">
+        in the program <span className="font-bold text-gray-800">{cert.programName}</span>
+      </p>
+
+      <div className="flex w-full justify-around items-end mt-4" style={{ marginTop: "auto", paddingTop: "16px" }}>
+        <div className="text-center" style={{ width: "180px" }}>
+          <div style={{ borderBottom: "1px solid #555", paddingBottom: "6px", marginBottom: "4px" }}>
+            <span className="italic text-sm text-gray-700">{format(new Date(cert.createdAt), "MMMM do, yyyy")}</span>
           </div>
-          <p className="text-sm font-bold uppercase tracking-wider text-gray-500">Date</p>
-        </div>
-        
-        <div className="w-32 h-32 rounded-full border-4 border-amber-500 flex items-center justify-center opacity-80 transform rotate-12">
-          <div className="text-amber-600 font-serif font-bold text-center leading-none">
-            OFFICIAL<br/><span className="text-sm">SEAL</span>
-          </div>
+          <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Date</p>
         </div>
 
-        <div className="text-center w-64">
-          <div className="border-b border-gray-400 pb-2 mb-2 h-8">
-            {/* Signature space */}
-          </div>
-          <p className="text-sm font-bold uppercase tracking-wider text-gray-500">KathArtsis Director</p>
+        <div
+          className="flex items-center justify-center font-bold text-center"
+          style={{
+            width: "90px",
+            height: "90px",
+            borderRadius: "50%",
+            border: "3px solid #ca8a04",
+            color: "#ca8a04",
+            fontSize: "10px",
+            lineHeight: 1.3,
+            letterSpacing: "0.05em",
+          }}
+        >
+          OFFICIAL<br />SEAL
+        </div>
+
+        <div className="text-center" style={{ width: "180px" }}>
+          <div style={{ borderBottom: "1px solid #555", paddingBottom: "6px", marginBottom: "4px", height: "28px" }}></div>
+          <p className="text-xs font-bold uppercase tracking-wider text-gray-500">KathArtsis Director</p>
         </div>
       </div>
     </div>
