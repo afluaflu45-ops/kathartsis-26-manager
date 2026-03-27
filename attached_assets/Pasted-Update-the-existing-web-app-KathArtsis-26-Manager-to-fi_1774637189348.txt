@@ -1,0 +1,167 @@
+Update the existing web app “KathArtsis 26 Manager” to fix the following bugs and printing issues. Do NOT break any existing functionality.
+
+---
+
+🐞 1. FINANCE MODULE – IMAGE UPLOAD BUG
+
+Issue:
+
+“Save Transaction” button does not work when an image is attached.
+
+Fix:
+
+- Ensure form supports file upload using:
+  - "enctype="multipart/form-data""
+- Handle file upload properly in backend (Express):
+  - Use multer or similar middleware
+- Validate:
+  - Image optional (form should submit with or without image)
+- After saving:
+  - Store image path in database
+  - Transaction should save successfully
+
+---
+
+🧾 2. RECEIPT MODULE – AMOUNT DISPLAY BUG
+
+Issue:
+
+- Amount format incorrect
+- Font not properly styled
+
+Fix:
+
+- Format amount as:
+  👉 ₹500.00 (2 decimal places)
+- Use proper number formatting (Indian format if possible)
+
+Design Fix:
+
+- Make amount:
+  - Large font (text-2xl or bigger)
+  - Bold
+  - Green color
+  - Right aligned
+
+---
+
+🖨️ 3. PRINT COLOR ISSUE (VERY IMPORTANT)
+
+Issue:
+
+Receipts, stickers, and certificates print in black & white (colors lost)
+
+Fix (CSS Print Optimization):
+
+Add print styles:
+
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+Also:
+
+- Avoid transparent backgrounds
+- Use solid colors (green, gold)
+- Ensure Tailwind classes are not overridden in print
+
+---
+
+🏷️ 4. STICKER SIZE FIX (IMPORTANT)
+
+Requirement:
+
+Each sticker size:
+
+👉 3cm × 7cm
+
+Fix:
+
+- Set sticker container size:
+
+.sticker {
+  width: 7cm;
+  height: 3cm;
+}
+
+A3 Layout:
+
+- Arrange multiple stickers per A3 page
+- Use grid layout:
+  - Auto-fit rows and columns
+  - Maintain proper spacing
+
+---
+
+🖨️ STICKER PRINT COLOR FIX
+
+- Apply same print CSS (color fix)
+- Ensure:
+  - Logo visible
+  - Background color preserved
+  - Text contrast clear
+
+---
+
+📜 5. CERTIFICATE PRINT COLOR FIX
+
+Issue:
+
+Certificate prints in black & white
+
+Fix:
+
+- Apply same print color CSS
+- Ensure:
+  - Background color visible
+  - Logo visible
+  - Borders visible
+
+---
+
+🎨 6. GLOBAL PRINT FIXES
+
+- Ensure all print pages:
+  
+  - Hide buttons/UI
+  - Maintain layout
+  - Keep margins correct
+
+- Add:
+
+@page {
+  size: A4;
+  margin: 10mm;
+}
+
+---
+
+⚠️ IMPORTANT RULES
+
+- Do NOT break existing features
+- Do NOT remove current UI
+- Only fix and enhance
+- Maintain current data structure
+
+---
+
+🚀 FINAL GOAL
+
+After fixes:
+
+- Transactions save correctly with image
+- Amount displays properly in ₹ format
+- Receipts print in full color
+- Stickers print in correct size (3cm × 7cm) with color
+- Certificates print in full color
+- System remains stable and fast
+
+Make all fixes cleanly and professionally.

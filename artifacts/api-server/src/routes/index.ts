@@ -4,6 +4,7 @@ import financeRouter from "./finance";
 import receiptsRouter from "./receipts";
 import stickersRouter from "./stickers";
 import certificatesRouter from "./certificates";
+import uploadsRouter from "./uploads";
 
 const router: IRouter = Router();
 
@@ -12,5 +13,6 @@ router.use("/finance", financeRouter);
 router.use("/receipts", receiptsRouter);
 router.use("/stickers", stickersRouter);
 router.use("/certificates", certificatesRouter);
+router.use("/uploads", uploadsRouter);
 
 export default router;

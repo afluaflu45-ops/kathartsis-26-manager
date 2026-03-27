@@ -50,13 +50,21 @@
 /* Print Utilities */
 @media print {
   body {
-    background: white;
+    background: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
-  
+
+  /* Force background colors, gradients, and images to print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
   .print-hide {
     display: none !important;
   }
-  
+
   .print-only {
     display: block !important;
   }
@@ -67,7 +75,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: white;
+    background: white !important;
     z-index: 9999;
     padding: 0;
     margin: 0;
@@ -76,17 +84,43 @@
     justify-content: center;
   }
 
-  /* Force background colors and images to print */
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+  /* Sticker print page: A4, fill with stickers in a grid */
+  .print-sticker-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    min-height: 100vh;
+    background: white !important;
+    z-index: 9999;
+    padding: 10mm;
+    box-sizing: border-box;
   }
-  
+
+  .sticker-print-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 7cm);
+    gap: 5mm;
+    justify-content: start;
+  }
+
+  .sticker-item {
+    width: 7cm !important;
+    height: 3cm !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
   @page {
-    margin: 0.5cm;
+    size: A4;
+    margin: 10mm;
   }
 }
 
 .print-only {
+  display: none;
+}
+
+.print-sticker-page {
   display: none;
 }

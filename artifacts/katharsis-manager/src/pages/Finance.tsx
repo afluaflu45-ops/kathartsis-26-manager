@@ -52,8 +52,9 @@ export default function Finance() {
   const deleteTx = useDeleteFinanceTx();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [attachmentPreview, setAttachmentPreview] = useState<string | null>(null);
-  const [attachmentData, setAttachmentData] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [viewingAttachment, setViewingAttachment] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<FormValues>({
@@ -71,30 +72,53 @@ export default function Finance() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const dataUrl = ev.target?.result as string;
-      setAttachmentPreview(dataUrl);
-      setAttachmentData(dataUrl);
-    };
-    reader.readAsDataURL(file);
+    setSelectedFile(file);
+    const previewUrl = URL.createObjectURL(file);
+    setAttachmentPreview(previewUrl);
   };
 
-  const onSubmit = (data: FormValues) => {
-    const notes = [data.notes || "", attachmentData ? `__ATTACHMENT__${attachmentData}` : ""]
+  const resetForm = () => {
+    setIsFormOpen(false);
+    setAttachmentPreview(null);
+    setSelectedFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    form.reset({ type: "income", date: new Date().toISOString().split("T")[0], category: "" });
+  };
+
+  const onSubmit = async (data: FormValues) => {
+    let attachmentUrl: string | null = null;
+
+    if (selectedFile) {
+      setIsUploading(true);
+      try {
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        const response = await fetch("/api/uploads", {
+          method: "POST",
+          body: formData,
+        });
+        if (!response.ok) throw new Error("Upload failed");
+        const result = await response.json();
+        attachmentUrl = result.url as string;
+      } catch {
+        alert("Image upload failed. Please try again or submit without an image.");
+        setIsUploading(false);
+        return;
+      } finally {
+        setIsUploading(false);
+      }
+    }
+
+    const notes = [
+      data.notes || "",
+      attachmentUrl ? `__ATTACHMENT__${attachmentUrl}` : "",
+    ]
       .filter(Boolean)
       .join("|");
+
     createTx.mutate(
       { data: { ...data, notes } },
-      {
-        onSuccess: () => {
-          setIsFormOpen(false);
-          setAttachmentPreview(null);
-          setAttachmentData(null);
-          if (fileInputRef.current) fileInputRef.current.value = "";
-          form.reset({ type: "income", date: new Date().toISOString().split("T")[0], category: "" });
-        },
-      }
+      { onSuccess: resetForm }
     );
   };
 
@@ -109,6 +133,8 @@ export default function Finance() {
     if (!notes) return "";
     return notes.split("|").filter((p) => !p.startsWith("__ATTACHMENT__")).join(" ").trim();
   };
+
+  const isBusy = isUploading || createTx.isPending;
 
   return (
     <div className="space-y-8">
@@ -252,7 +278,7 @@ export default function Finance() {
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium flex items-center gap-2">
-                    <Paperclip className="w-4 h-4" /> Attach Bill / Receipt Image (JPG, PNG)
+                    <Paperclip className="w-4 h-4" /> Attach Bill / Receipt Image (JPG, PNG — optional)
                   </label>
                   <div className="flex items-center gap-4">
                     <input
@@ -269,9 +295,9 @@ export default function Finance() {
                 </div>
 
                 <div className="flex justify-end gap-2 pt-2">
-                  <Button type="button" variant="ghost" onClick={() => { setIsFormOpen(false); setAttachmentPreview(null); setAttachmentData(null); }}>Cancel</Button>
-                  <Button type="submit" disabled={createTx.isPending}>
-                    {createTx.isPending ? "Saving..." : "Save Transaction"}
+                  <Button type="button" variant="ghost" onClick={resetForm} disabled={isBusy}>Cancel</Button>
+                  <Button type="submit" disabled={isBusy}>
+                    {isUploading ? "Uploading image..." : createTx.isPending ? "Saving..." : "Save Transaction"}
                   </Button>
                 </div>
               </form>

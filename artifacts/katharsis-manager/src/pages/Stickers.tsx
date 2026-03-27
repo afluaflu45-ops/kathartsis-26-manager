@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import type { Sticker, CreateStickerBodyPosition } from "@workspace/api-client-react";
+import type { Sticker } from "@workspace/api-client-react";
 
 const formSchema = z.object({
   programName: z.string().min(1, "Program Name is required"),
@@ -40,7 +40,7 @@ export default function Stickers() {
       <div className="print-hide space-y-8">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Award Stickers</h2>
-          <p className="text-muted-foreground mt-2">Generate position badges and stickers for programs.</p>
+          <p className="text-muted-foreground mt-2">Generate position badges and stickers for programs. Size: 7cm × 3cm.</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -139,21 +139,27 @@ export default function Stickers() {
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 print-hide">
           <div className="bg-background rounded-xl p-6 max-w-sm w-full">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold">Print Sticker</h3>
+              <h3 className="text-xl font-bold">Print Sticker (7cm × 3cm)</h3>
               <div className="space-x-2">
                 <Button variant="outline" onClick={() => setPrintingSticker(null)}>Close</Button>
                 <Button onClick={() => window.print()}><Printer className="w-4 h-4 mr-2" />Print</Button>
               </div>
             </div>
-            <div className="flex justify-center bg-gray-100 p-8 rounded-lg">
+            <div className="flex justify-center bg-gray-100 p-6 rounded-lg">
               <PrintableSticker sticker={printingSticker} />
             </div>
           </div>
         </div>
       )}
 
-      <div className="hidden print-fullscreen print-only">
-        {printingSticker && <PrintableSticker sticker={printingSticker} />}
+      <div className="hidden print-sticker-page print-only">
+        {printingSticker && (
+          <div className="sticker-print-grid">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <PrintableSticker key={i} sticker={printingSticker} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -163,54 +169,124 @@ function PrintableSticker({ sticker }: { sticker: Sticker }) {
   const isGold = sticker.position === "1st";
   const isSilver = sticker.position === "2nd";
 
-  const gradientColors = isGold
-    ? "from-amber-300 via-yellow-400 to-amber-500"
+  const bgGradient = isGold
+    ? "linear-gradient(135deg, #fbbf24, #f59e0b, #d97706)"
     : isSilver
-    ? "from-slate-200 via-slate-300 to-slate-400"
-    : "from-orange-300 via-orange-400 to-orange-500";
+    ? "linear-gradient(135deg, #e2e8f0, #cbd5e1, #94a3b8)"
+    : "linear-gradient(135deg, #fb923c, #f97316, #ea580c)";
 
-  const borderColor = isGold ? "#b45309" : isSilver ? "#64748b" : "#9a3412";
+  const borderColor = isGold ? "#b45309" : isSilver ? "#475569" : "#9a3412";
   const textColor = isGold ? "#78350f" : isSilver ? "#1e293b" : "#431407";
+  const trophyColor = isGold ? "#92400e" : isSilver ? "#334155" : "#7c2d12";
 
   return (
     <div
-      className={`w-[85mm] rounded-2xl bg-gradient-to-br ${gradientColors} shadow-2xl overflow-hidden`}
-      style={{ border: `4px solid ${borderColor}` }}
+      className="sticker-item"
+      style={{
+        width: "7cm",
+        height: "3cm",
+        background: bgGradient,
+        border: `3px solid ${borderColor}`,
+        borderRadius: "8px",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        overflow: "hidden",
+        boxSizing: "border-box",
+        flexShrink: 0,
+      }}
     >
-      <div className="flex flex-col items-center px-6 pt-5 pb-2">
-        <img src="/kathartsis-logo.png" alt="KathArtsis" className="h-8 object-contain mb-3 opacity-90" />
-        <div className="w-full border-t border-current opacity-20 mb-3"></div>
-      </div>
-
-      <div className="flex flex-col items-center px-6 pb-6 text-center" style={{ color: textColor }}>
-        <div className="mb-2">
-          <Trophy
-            className="w-14 h-14 mx-auto drop-shadow-md mb-1"
-            style={{ color: isGold ? "#92400e" : isSilver ? "#334155" : "#7c2d12" }}
-          />
-        </div>
-        <div
-          className="text-5xl font-black tracking-tight leading-none mb-1"
-          style={{ fontFamily: "Georgia, serif" }}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "2cm",
+          minWidth: "2cm",
+          height: "100%",
+          borderRight: `2px solid ${borderColor}`,
+          background: "rgba(0,0,0,0.08)",
+          padding: "4px",
+          gap: "3px",
+        }}
+      >
+        <img
+          src="/kathartsis-logo.png"
+          alt="KathArtsis"
+          style={{ height: "20px", objectFit: "contain", opacity: 0.9 }}
+        />
+        <svg
+          viewBox="0 0 24 24"
+          fill={trophyColor}
+          style={{ width: "22px", height: "22px" }}
+        >
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z" />
+          <path d="M5 4h3v2H5V4zm11 0h3v2h-3V4zM4 6h2v3H4V6zm14 0h2v3h-2V6z" />
+        </svg>
+        <span
+          style={{
+            fontSize: "11px",
+            fontWeight: "900",
+            color: textColor,
+            fontFamily: "Georgia, serif",
+            lineHeight: 1,
+          }}
         >
           {sticker.position}
-        </div>
-        <div className="text-base font-bold uppercase tracking-widest opacity-70 mb-3">PLACE</div>
+        </span>
+      </div>
 
-        <div className="w-12 border-t-2 border-current opacity-30 mb-3"></div>
-
-        <p
-          className="text-xs font-bold uppercase tracking-widest opacity-75 mb-2 leading-tight px-2"
-          style={{ maxWidth: "100%" }}
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          padding: "6px 10px",
+          color: textColor,
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "8px",
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            opacity: 0.7,
+            marginBottom: "2px",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
         >
-          {sticker.programName}
-        </p>
-        <p
-          className="text-2xl font-bold leading-tight"
-          style={{ fontFamily: "Georgia, serif" }}
+          {sticker.position} Place — {sticker.programName}
+        </div>
+        <div
+          style={{
+            fontSize: "16px",
+            fontWeight: 900,
+            fontFamily: "Georgia, serif",
+            lineHeight: 1.1,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
         >
           {sticker.name}
-        </p>
+        </div>
+        <div
+          style={{
+            fontSize: "7px",
+            opacity: 0.6,
+            marginTop: "3px",
+            fontWeight: 600,
+            letterSpacing: "0.05em",
+          }}
+        >
+          KathArtsis — The Ultimate Talent Fiesta
+        </div>
       </div>
     </div>
   );
