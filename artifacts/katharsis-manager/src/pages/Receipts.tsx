@@ -160,8 +160,14 @@ export default function Receipts() {
 
 function PrintableReceipt({ receipt }: { receipt: Receipt }) {
   return (
-    <div className="w-full max-w-[800px] mx-auto bg-white relative overflow-hidden" style={{ fontFamily: "Georgia, serif" }}>
-      <div className="h-3 w-full" style={{ background: "linear-gradient(to right, #15803d, #ca8a04)" }}></div>
+    <div
+      className="receipt-bw-safe w-full max-w-[800px] mx-auto bg-white relative overflow-hidden"
+      style={{ fontFamily: "Georgia, serif", border: "2px solid #15803d" }}
+    >
+      <div
+        className="receipt-header-bar h-3 w-full"
+        style={{ background: "linear-gradient(to right, #15803d, #ca8a04)" }}
+      ></div>
 
       <div className="px-12 pt-8 pb-10">
         <div className="flex flex-col items-center mb-8 border-b-2 pb-6" style={{ borderColor: "#15803d" }}>
@@ -175,45 +181,53 @@ function PrintableReceipt({ receipt }: { receipt: Receipt }) {
 
         <div className="flex justify-between items-start mb-8">
           <div>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Receipt Number</p>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Receipt Number</p>
             <p className="text-3xl font-bold font-mono" style={{ color: "#15803d" }}>{receipt.receiptNumber}</p>
           </div>
           <div className="text-right">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Date of Issue</p>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Date of Issue</p>
             <p className="text-lg font-medium text-gray-800">{format(new Date(receipt.createdAt), "MMMM do, yyyy")}</p>
-            <p className="text-sm text-gray-500">{format(new Date(receipt.createdAt), "h:mm a")}</p>
+            <p className="text-sm text-gray-600">{format(new Date(receipt.createdAt), "h:mm a")}</p>
           </div>
         </div>
 
-        <div className="rounded-xl p-6 mb-8 border-l-4" style={{ backgroundColor: "#f0fdf4", borderColor: "#15803d" }}>
+        <div
+          className="receipt-panel rounded-xl p-6 mb-8 border-l-4"
+          style={{ backgroundColor: "#f0fdf4", borderColor: "#15803d", borderLeftWidth: "6px" }}
+        >
           <div className="mb-5">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Received With Gratitude From</p>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Received With Gratitude From</p>
             <p className="text-3xl font-bold text-gray-900">{receipt.donorName}</p>
           </div>
-          <div className="flex items-end justify-between">
+          <div className="flex items-end justify-between flex-wrap gap-4">
             <div>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Payment Method</p>
-              <p className="text-lg font-medium text-gray-700">{receipt.paymentMethod}</p>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Payment Method</p>
+              <p className="text-xl font-bold text-gray-800 border border-gray-300 px-3 py-1 rounded">{receipt.paymentMethod}</p>
             </div>
             <div className="text-right">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Amount</p>
-              <p className="text-5xl font-bold" style={{ color: "#15803d" }}>{formatCurrency(receipt.amount)}</p>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Amount Received</p>
+              <p className="receipt-amount text-5xl font-bold" style={{ color: "#15803d" }}>
+                {formatCurrency(Number(receipt.amount))}
+              </p>
             </div>
           </div>
         </div>
 
-        <div className="flex justify-between items-end mt-10">
-          <p className="text-sm text-gray-500 italic max-w-xs">
+        <div className="flex justify-between items-end mt-10 flex-wrap gap-6">
+          <p className="text-sm text-gray-600 italic max-w-xs border-l-2 border-gray-300 pl-3">
             We gratefully acknowledge your generous contribution to KathArtsis — The Ultimate Talent Fiesta.
           </p>
           <div className="text-center w-48">
-            <div className="border-b-2 border-gray-300 pb-2 mb-2 h-10"></div>
-            <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Authorized Signature</p>
+            <div className="border-b-2 border-gray-400 pb-2 mb-2 h-10"></div>
+            <p className="text-xs font-bold uppercase tracking-wider text-gray-600">Authorized Signature</p>
           </div>
         </div>
       </div>
 
-      <div className="h-1.5 w-full" style={{ background: "linear-gradient(to right, #15803d, #ca8a04)" }}></div>
+      <div
+        className="receipt-footer-bar h-1.5 w-full"
+        style={{ background: "linear-gradient(to right, #15803d, #ca8a04)" }}
+      ></div>
     </div>
   );
 }

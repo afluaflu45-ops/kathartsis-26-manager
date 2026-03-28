@@ -12,6 +12,7 @@ import Receipts from "@/pages/Receipts";
 import Stickers from "@/pages/Stickers";
 import Certificates from "@/pages/Certificates";
 import AccountStatement from "@/pages/AccountStatement";
+import Sports from "@/pages/Sports";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,6 +33,7 @@ function Router() {
         <Route path="/stickers" component={Stickers} />
         <Route path="/certificates" component={Certificates} />
         <Route path="/statement" component={AccountStatement} />
+        <Route path="/sports" component={Sports} />
         <Route component={NotFound} />
       </Switch>
     </AppLayout>

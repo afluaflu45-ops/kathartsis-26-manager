@@ -47,18 +47,16 @@
   }
 }
 
-/* Print Utilities */
+/* === PRINT UTILITIES === */
 @media print {
-  body {
-    background: white !important;
+  /* Force background colors, gradients, and images to print in full color */
+  body, * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  /* Force background colors, gradients, and images to print */
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+  body {
+    background: white !important;
   }
 
   .print-hide {
@@ -69,6 +67,7 @@
     display: block !important;
   }
 
+  /* Receipt print: full-page centered, A4 */
   .print-fullscreen {
     position: fixed;
     top: 0;
@@ -84,31 +83,23 @@
     justify-content: center;
   }
 
-  /* Sticker print page: A4, fill with stickers in a grid */
-  .print-sticker-page {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    min-height: 100vh;
-    background: white !important;
-    z-index: 9999;
-    padding: 10mm;
-    box-sizing: border-box;
+  /* Receipt B&W safety: ensure all text is dark and borders visible */
+  .receipt-bw-safe {
+    border: 2px solid #000 !important;
+    color: #000 !important;
   }
-
-  .sticker-print-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 7cm);
-    gap: 5mm;
-    justify-content: start;
+  .receipt-bw-safe .receipt-amount {
+    color: #000 !important;
+    border-bottom: 2px solid #000 !important;
   }
-
-  .sticker-item {
-    width: 7cm !important;
-    height: 3cm !important;
-    page-break-inside: avoid;
-    break-inside: avoid;
+  .receipt-bw-safe .receipt-panel {
+    border-left: 4px solid #000 !important;
+    background: #f5f5f5 !important;
+  }
+  .receipt-bw-safe .receipt-header-bar,
+  .receipt-bw-safe .receipt-footer-bar {
+    background: #000 !important;
+    height: 6px !important;
   }
 
   @page {
@@ -118,9 +109,5 @@
 }
 
 .print-only {
-  display: none;
-}
-
-.print-sticker-page {
   display: none;
 }

@@ -1,0 +1,217 @@
+Update the existing web app “KathArtsis 26 Manager” with the following fixes and new features. Do NOT break any existing functionality.
+
+---
+
+🧾 1. RECEIPT MODULE – AMOUNT FIX (IMPORTANT)
+
+Fix Amount Display:
+
+- Format all amounts in Indian Rupees (₹)
+- Always show:
+  - Rs: 500.00
+  - Rs: 1,54,263.78 (Indian format if possible)
+
+UI Design:
+
+- Amount should be:
+  - Large font (text-3xl or higher)
+  - Bold
+  - Green color
+  - Right aligned
+
+Code Logic:
+
+- Use proper number formatting (JavaScript Intl.NumberFormat with "en-IN")
+
+---
+
+🖨️ 2. RECEIPT PRINT MODE (COLOR + B/W SUPPORT)
+
+Requirement:
+
+- Receipt should print correctly in:
+  - Color mode ✅
+  - Black & White mode ✅
+
+Fix:
+
+- Ensure strong contrast:
+  - Dark text on light background
+- Do NOT rely only on colors for visibility
+
+Add Print CSS:
+
+- Maintain layout in both modes
+- Ensure text is readable even without color
+
+---
+
+🏷️ 3. STICKER MODULE – A3 BULK PRINT (MAJOR FEATURE)
+
+Sticker Size:
+
+👉 Each sticker = 6 cm width × 2.5 cm height
+
+A3 Sheet Setup:
+
+👉 Page size = A3
+
+Requirement:
+
+- When printing:
+  - Automatically fit maximum number of stickers on A3
+  - Arrange in grid layout
+
+Layout Rules:
+
+- Use CSS Grid or Flexbox
+- Maintain:
+  - Equal spacing
+  - No overlap
+  - Proper margins
+
+Example:
+
+- Fill page row by row
+- Continue until all generated stickers are placed
+
+---
+
+🖨️ Print & Download:
+
+- Add button:
+  👉 “Download A3 Stickers (PDF)”
+
+- Generate:
+  
+  - Single A3 PDF
+  - Contains all stickers
+
+---
+
+🎨 STICKER DESIGN FIX:
+
+- Keep:
+  - Logo
+  - Program Name (bold)
+  - Position (1st/2nd/3rd)
+  - Participant Name
+- Center aligned
+- Clean layout for printing
+
+---
+
+⚽ 4. NEW MODULE: SPORTS MANAGEMENT SYSTEM
+
+Add new Dashboard Option:
+
+👉 “Sports”
+
+---
+
+🧾 SPORTS FEATURES
+
+1. Event Creation:
+
+- Add sports item:
+  - Example: Football, Cricket, Tug of War
+
+---
+
+2. Team Structure:
+
+3 Teams (fixed):
+
+- 1. Cira Cimarron 
+- 2. Maze Mocambo
+- 3.  Aza Azania 
+
+---
+
+3. Participant Entry:
+
+Fields:
+
+- Student Name
+- Team 
+- Sports Item
+- Code Letter (short unique code)
+- Marks / Score
+
+---
+
+4. Result System:
+
+- Store results for each event
+- Rank participants (1st, 2nd, 3rd)
+
+---
+
+5. Scoreboard System (IMPORTANT)
+
+🏆 Team Scoreboard:
+
+- Total score for:
+  - Team A
+  - Team B
+  - Team C
+- Display leaderboard
+
+---
+
+👤 Student-wise Scoreboard:
+
+- Show:
+  - Student Name
+  - Total points
+  - Events participated
+
+---
+
+6. Auto Calculation:
+
+- Sum scores automatically
+- Update leaderboard in real-time
+
+---
+
+7. Download Options:
+
+Add buttons:
+
+- Download Team Scoreboard (PDF)
+- Download Student Scoreboard (PDF)
+- Export all data (CSV)
+
+---
+
+🎨 SPORTS UI DESIGN
+
+- Table-based clean layout
+- Highlight:
+  - Top performers
+  - Winning team
+- Use simple colors for clarity
+
+---
+
+⚙️ GENERAL RULES
+
+- Do NOT break existing modules
+- Keep system fast
+- Maintain clean UI
+- Ensure all print layouts are aligned properly
+
+---
+
+🚀 FINAL GOAL
+
+System should now:
+
+- Show properly formatted ₹ amounts in receipts
+- Print receipts clearly in both color & black-white
+- Generate A3 sheet with multiple stickers (6cm × 2.5cm each)
+- Allow downloading sticker sheets as PDF
+- Include full Sports Management system with scoring, leaderboard, and export options
+
+Make everything stable, accurate, and print-ready.

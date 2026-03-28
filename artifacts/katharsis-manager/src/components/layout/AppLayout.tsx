@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, Wallet, Receipt, Award, Medal, FileText } from "lucide-react";
+import { LayoutDashboard, Wallet, Receipt, Award, Medal, FileText, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { href: "/stickers", label: "Stickers", icon: Award },
   { href: "/certificates", label: "Certificates", icon: Medal },
   { href: "/statement", label: "Account Statement", icon: FileText },
+  { href: "/sports", label: "Sports", icon: Trophy },
 ];
 
 export function AppLayout({ children }: { children: React.ReactNode }) {

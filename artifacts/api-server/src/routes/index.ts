@@ -5,6 +5,7 @@ import receiptsRouter from "./receipts";
 import stickersRouter from "./stickers";
 import certificatesRouter from "./certificates";
 import uploadsRouter from "./uploads";
+import sportsRouter from "./sports";
 
 const router: IRouter = Router();
 
@@ -14,5 +15,6 @@ router.use("/receipts", receiptsRouter);
 router.use("/stickers", stickersRouter);
 router.use("/certificates", certificatesRouter);
 router.use("/uploads", uploadsRouter);
+router.use("/sports", sportsRouter);
 
 export default router;
