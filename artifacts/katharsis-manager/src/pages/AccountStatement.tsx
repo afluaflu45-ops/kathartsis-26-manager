@@ -90,7 +90,7 @@ export default function AccountStatement() {
         </div>
 
         <CardContent className="p-0">
-          <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border">
+          <div className="account-statement-grid grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border">
             <div>
               <div className="p-4 border-b text-center font-bold uppercase tracking-wider text-sm" style={{ background: "#fef2f2", color: "#991b1b" }}>
                 Expenditure (Dr.)

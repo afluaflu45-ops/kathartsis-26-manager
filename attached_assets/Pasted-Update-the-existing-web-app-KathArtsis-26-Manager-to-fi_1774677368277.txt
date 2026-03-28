@@ -1,0 +1,163 @@
+Update the existing web app “KathArtsis 26 Manager” to fix the following critical issues. Do NOT break existing functionality.
+
+---
+
+🧾 1. RECEIPT AMOUNT FORMAT (FINAL FIX)
+
+Requirement:
+
+- Use ONLY:
+  👉 Rs: 500.00
+- Do NOT use ₹ symbol
+- Do NOT underline amount
+
+Fix:
+
+- Replace any currency formatter with:
+  - "Rs: " + amount.toFixed(2)
+
+---
+
+🖨️ 2. RECEIPT PRINT COLOR FIX
+
+Issue:
+
+Receipt prints in black & white
+
+Fix:
+
+- Force color printing using CSS:
+
+@media print {
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+Additional Fix:
+
+- Use solid background colors (no light gray)
+- Ensure:
+  - Green header visible
+  - Logo visible
+  - Text contrast strong
+
+---
+
+📱 3. MOBILE RESPONSIVENESS (IMPORTANT)
+
+Issue:
+
+App is desktop-only
+
+Fix:
+
+- Make layout responsive using Tailwind:
+
+Add:
+
+- "flex-col" on mobile
+- "md:flex-row" for desktop
+- Use responsive padding/margins
+- Ensure:
+  - Dashboard works on mobile
+  - Forms fit screen
+  - Buttons are clickable
+
+---
+
+📜 4. CERTIFICATE PRINT CUT ISSUE
+
+Issue:
+
+Certificate gets cut (half visible)
+
+Fix:
+
+Add print CSS:
+
+@page {
+  size: A4 landscape;
+  margin: 10mm;
+}
+
+.certificate {
+  width: 100%;
+  height: 100%;
+  page-break-inside: avoid;
+}
+
+Ensure:
+
+- Entire certificate fits in one page
+- No overflow hidden
+- Center content
+
+---
+
+🧾 5. RECEIPT → FINANCE AUTO ENTRY (CRITICAL)
+
+Issue:
+
+Receipt not added to finance
+
+Fix:
+
+When generating receipt:
+
+Automatically create transaction:
+
+- Type: Income
+- Category: Donation
+- Name: Donor Name
+- Amount: Same amount
+- Payment Method: same
+
+Save to finance database immediately
+
+---
+
+📊 6. ACCOUNT STATEMENT PRINT FIX
+
+Issue:
+
+Income and Expense show side-by-side on screen
+But print shows one below another ❌
+
+Fix:
+
+Force 2-column layout in print:
+
+@media print {
+  .account-container {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between;
+  }
+
+  .income, .expense {
+    width: 48%;
+  }
+}
+
+Ensure:
+
+- Left = Expense (To…)
+- Right = Income (By…)
+- Never stack vertically in print
+
+---
+
+🎯 FINAL GOAL
+
+After fix:
+
+- Receipt shows: Rs: 500.00 (correct format) (formal font)
+- Receipt prints in color
+- Mobile view works properly
+- Certificate prints fully (not cut)
+- Receipt auto updates finance
+- Account statement prints in 2 columns (left & right)
+
+Ensure stability and consistency across all modules.

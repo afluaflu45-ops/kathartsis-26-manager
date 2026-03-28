@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { db, receiptsTable } from "@workspace/db";
+import { db, receiptsTable, transactionsTable } from "@workspace/db";
 import { CreateReceiptBody } from "@workspace/api-zod";
 import { sql } from "drizzle-orm";
 
@@ -29,12 +29,24 @@ router.post("/", async (req, res) => {
   try {
     const body = CreateReceiptBody.parse(req.body);
     const receiptNumber = await generateReceiptNumber();
+
     const [row] = await db.insert(receiptsTable).values({
       receiptNumber,
       donorName: body.donorName,
       amount: String(body.amount),
       paymentMethod: body.paymentMethod,
     }).returning();
+
+    await db.insert(transactionsTable).values({
+      date: new Date().toISOString().split("T")[0],
+      type: "income",
+      category: "Donation",
+      name: body.donorName,
+      amount: String(body.amount),
+      paymentMethod: body.paymentMethod,
+      notes: `Auto-entry from Receipt ${receiptNumber}`,
+    });
+
     res.status(201).json({
       ...row,
       amount: parseFloat(row.amount),

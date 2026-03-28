@@ -36,13 +36,13 @@ export default function Receipts() {
 
   return (
     <div className="space-y-8">
-      <div className="print-hide space-y-8">
+      <div className="print-hide space-y-6">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Donation Receipts</h2>
-          <p className="text-muted-foreground mt-2">Generate and print official donation receipts.</p>
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Donation Receipts</h2>
+          <p className="text-muted-foreground mt-1 text-sm md:text-base">Generate and print official donation receipts.</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <Card className="lg:col-span-1 shadow-md">
             <CardHeader>
               <CardTitle>Generate New Receipt</CardTitle>
